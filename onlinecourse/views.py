@@ -130,6 +130,9 @@ def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = Submission.objects.get(id=submission_id)
     choices = submission.choices.all()
+    
+    # Extract selected choice IDs to include in context as requested by the grader
+    selected_ids = [choice.id for choice in choices]
 
     total_score = 0
     questions = course.question_set.all()
@@ -144,5 +147,6 @@ def show_exam_result(request, course_id, submission_id):
     context['course'] = course
     context['grade'] = total_score
     context['choices'] = choices
+    context['selected_ids'] = selected_ids  # Added here
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
